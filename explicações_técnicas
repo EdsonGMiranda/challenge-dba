@@ -1,0 +1,35 @@
+1. Identificação de Chaves Primárias e Estrangeiras
+
+Chaves primárias e estrangeiras:
+Tabela tenant:
+id: PK
+Tabela person:
+id: PK
+Tabela institution:
+id: PK
+tenant_id: FK (referencia tenant.id)
+Tabela course:
+id: PK
+tenant_id: FK (referencia tenant.id)
+institution_id: FK (referencia institution.id)
+Tabela enrollment:
+id: PK
+tenant_id: FK (referencia tenant.id)
+institution_id: FK (referencia institution.id)
+person_id: FK (referencia person.id)
+
+2. Construção de Índices Essenciais
+Considerando o volume de dados e a necessidade de performance, criei índices sobre colunas frequentemente usadas em filtros, como tenant_id, institution_id, person_id e também em metadata para realizar buscas eficientes no JSONB.
+
+3. Garantindo Integridade de Regras (Unique) em Enrollment
+Isto já está garantido com a constraint de exclusividade CONSTRAINT unique_enrollment UNIQUE (tenant_id, institution_id, person_id) na tabela enrollment, que garante que a combinação desses três campos seja única.
+
+4. Implementação de Exclusão Lógica na Tabela enrollment
+A exclusão lógica pode ser implementada adicionando um campo que indica o estado do registro, como um is_active ou deleted_at, para controlar a exclusão de registros sem removê-los fisicamente.
+
+5. Consulta: Número de Matrículas por Curso em uma Instituição
+A consulta foi feita para contar as matrículas associadas a cursos e filtrar por tenant_id, institution_id e pela busca em metadata.
+
+7. Particionamento da Tabela enrollment
+O particionamento foi feito com base em tenant_id ou institution_id para melhorar a performance de consultas em grandes volumes de dados.
+
